@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: misarh-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-misarh_db}
+      POSTGRES_USER: ${DATABASE_USER:-misarh_user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-misarh_password}
+    ports:
+      - '${DATABASE_PORT:-54320}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - misarh-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-misarh_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: misarh-redis
+    restart: unless-stopped
+    ports:
+      - '${REDIS_PORT:-6399}:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - misarh-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Node.js API Backend (Commented out until API is implemented)
+  # api:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/api/Dockerfile
+  #   container_name: misarh-api
+  #   restart: unless-stopped
+  #   environment:
+  #     - NODE_ENV=development
+  #     - DATABASE_HOST=postgres
+  #     - DATABASE_PORT=5432
+  #     - DATABASE_NAME=${DATABASE_NAME:-misarh_db}
+  #     - DATABASE_USER=${DATABASE_USER:-misarh_user}
+  #     - DATABASE_PASSWORD=${DATABASE_PASSWORD:-misarh_password}
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #     - JWT_SECRET=${JWT_SECRET}
+  #     - OPENAI_API_KEY=${OPENAI_API_KEY}
+  #     - PAYSTACK_SECRET_KEY=${PAYSTACK_SECRET_KEY}
+  #     - FLUTTERWAVE_SECRET_KEY=${FLUTTERWAVE_SECRET_KEY}
+  #     - SENDGRID_API_KEY=${SENDGRID_API_KEY}
+  #     - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+  #     - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+  #     - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./apps/api:/app/apps/api
+  #     - ./packages:/app/packages
+  #     - /app/node_modules
+  #     - /app/apps/api/node_modules
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - misarh-network
+  #   command: npm run dev:api
+
+  # Angular Web Frontend (Commented out until Web is implemented)
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: apps/web/Dockerfile.dev
+  #   container_name: misarh-web
+  #   restart: unless-stopped
+  #   environment:
+  #     - NODE_ENV=development
+  #   ports:
+  #     - "4200:4200"
+  #   volumes:
+  #     - ./apps/web:/app/apps/web
+  #     - /app/node_modules
+  #     - /app/apps/web/node_modules
+  #   networks:
+  #     - misarh-network
+  #   command: npm run dev:web
+
+  # Nginx Reverse Proxy (Optional for production)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: misarh-nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8181:80"
+  #   volumes:
+  #     - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #   depends_on:
+  #     - api
+  #     - web
+  #   networks:
+  #     - misarh-network
+  #   profiles:
+  #     - production
+
+networks:
+  misarh-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
