@@ -102,6 +102,8 @@ export interface Order {
   shipping_address?: ShippingAddress;
   tracking_number?: string;
   notes?: string;
+  assigned_to?: string; // ID of admin/staff
+  priority?: 'normal' | 'high' | 'urgent';
   created_at: Date;
   updated_at: Date;
 }
@@ -411,6 +413,19 @@ export interface UpdateOrderStatusRequest {
   status: OrderStatus;
   tracking_number?: string;
   notes?: string;
+}
+
+export interface BulkUpdateStatusRequest {
+  order_ids: string[];
+  status: OrderStatus;
+}
+
+export interface AssignOrderRequest {
+  staff_id: string;
+}
+
+export interface UpdateOrderPriorityRequest {
+  priority: 'normal' | 'high' | 'urgent';
 }
 
 export interface RecordFormulaRequest {

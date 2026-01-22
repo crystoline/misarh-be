@@ -69,23 +69,23 @@
 
 ## Phase 6: Admin Dashboard Backend
 
-- [ ] Create admin authentication endpoints
-- [ ] Build order management API
-  - [ ] GET /admin/orders - List all orders with filters
-  - [ ] PUT /admin/orders/:id/status - Update order status
-  - [ ] PUT /admin/orders/:id/tracking - Add tracking info
-  - [ ] GET /admin/orders/stats - Order statistics
-- [ ] Order workflow management
-  - [ ] Bulk status updates
-  - [ ] Order assignment to staff
-  - [ ] Priority flagging
-  - [ ] Order notes/comments
-- [ ] Build consultation management API
-- [ ] Implement availability calendar API
-- [ ] Create formula recording endpoints
-- [ ] Build customer database queries
-- [ ] Implement analytics endpoints
-- [ ] Create export functionality
+- [x] Create admin authentication endpoints
+- [x] Build order management API
+  - [x] GET /admin/orders - List all orders with filters
+  - [x] PUT /admin/orders/:id/status - Update order status
+  - [x] PUT /admin/orders/:id/tracking - Add tracking info
+  - [x] GET /admin/orders/stats - Order statistics
+- [x] Order workflow management
+  - [x] Bulk status updates
+  - [x] Order assignment to staff
+  - [x] Priority flagging
+  - [x] Order notes/comments
+- [x] Build consultation management API
+- [x] Implement availability calendar API
+- [x] Create formula recording endpoints
+- [x] Build customer database queries
+- [x] Implement analytics endpoints
+- [x] Create export functionality
 
 ## Phase 7: Frontend Core (Angular)
 

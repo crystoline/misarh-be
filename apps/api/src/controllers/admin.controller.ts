@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
 import { query } from '../config/database';
 import {
     OrderStatus,
     UpdateOrderStatusRequest,
+    BulkUpdateStatusRequest,
+    AssignOrderRequest,
+    UpdateOrderPriorityRequest,
 } from '@misarh/shared';
 
 /**
@@ -151,6 +153,120 @@ export const getOrderStats = async (_req: Request, res: Response): Promise<void>
         res.status(500).json({
             success: false,
             error: { message: 'Failed to fetch order stats' },
+        });
+    }
+};
+
+/**
+ * @route   POST /admin/orders/bulk-status
+ * @desc    Bulk update order status
+ * @access  Private (Admin)
+ */
+export const bulkUpdateOrderStatus = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { order_ids, status }: BulkUpdateStatusRequest = req.body;
+
+        if (!order_ids || !Array.isArray(order_ids) || order_ids.length === 0) {
+            res.status(400).json({ success: false, error: { message: 'Order IDs required' } });
+            return;
+        }
+
+        if (!Object.values(OrderStatus).includes(status)) {
+            res.status(400).json({ success: false, error: { message: 'Invalid status' } });
+            return;
+        }
+
+        const result = await query(
+            'UPDATE orders SET status = $1, updated_at = NOW() WHERE id = ANY($2) RETURNING id',
+            [status, order_ids]
+        );
+
+        res.status(200).json({
+            success: true,
+            data: {
+                message: `Successfully updated ${result.rowCount} orders`,
+                updated_count: result.rowCount
+            },
+        });
+    } catch (error) {
+        console.error('Bulk update order status error:', error);
+        res.status(500).json({
+            success: false,
+            error: { message: 'Failed to bulk update orders' },
+        });
+    }
+};
+
+/**
+ * @route   PUT /admin/orders/:id/assign
+ * @desc    Assign order to staff
+ * @access  Private (Admin)
+ */
+export const assignOrder = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { staff_id }: AssignOrderRequest = req.body;
+
+        // Verify staff exists (optional, assuming ID is valid from frontend selection)
+        // In a real app we might want to check if the user exists and is staff
+
+        const result = await query(
+            'UPDATE orders SET assigned_to = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+            [staff_id, id]
+        );
+
+        if (result.rowCount === 0) {
+            res.status(404).json({ success: false, error: { message: 'Order not found' } });
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error('Assign order error:', error);
+        res.status(500).json({
+            success: false,
+            error: { message: 'Failed to assign order' },
+        });
+    }
+};
+
+/**
+ * @route   PUT /admin/orders/:id/priority
+ * @desc    Update order priority
+ * @access  Private (Admin)
+ */
+export const updateOrderPriority = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { id } = req.params;
+        const { priority }: UpdateOrderPriorityRequest = req.body;
+
+        if (!['normal', 'high', 'urgent'].includes(priority)) {
+            res.status(400).json({ success: false, error: { message: 'Invalid priority' } });
+            return;
+        }
+
+        const result = await query(
+            'UPDATE orders SET priority = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+            [priority, id]
+        );
+
+        if (result.rowCount === 0) {
+            res.status(404).json({ success: false, error: { message: 'Order not found' } });
+            return;
+        }
+
+        res.status(200).json({
+            success: true,
+            data: result.rows[0],
+        });
+    } catch (error) {
+        console.error('Update order priority error:', error);
+        res.status(500).json({
+            success: false,
+            error: { message: 'Failed to update order priority' },
         });
     }
 };
