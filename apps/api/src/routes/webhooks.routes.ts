@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import crypto from 'crypto';
-import { createOrder } from '../controllers/orders.controller';
+// import { createOrder } from '../controllers/orders.controller';
 
 const router = Router();
 
@@ -24,7 +24,7 @@ router.post('/paystack', async (req, res) => {
 
     // Handle successful charge
     if (event.event === 'charge.success') {
-      const { reference, customer, amount, metadata } = event.data;
+      const { reference, customer,  metadata } = event.data;
 
       console.log('Payment successful:', reference);
 
@@ -40,10 +40,10 @@ router.post('/paystack', async (req, res) => {
       }
     }
 
-    res.status(200).json({ received: true });
+    return res.status(200).json({ received: true });
   } catch (error) {
     console.error('Webhook error:', error);
-    res.status(500).json({ error: 'Webhook processing failed' });
+    return res.status(500).json({ error: 'Webhook processing failed' });
   }
 });
 
@@ -64,7 +64,7 @@ async function handleConsultationPayment(reference: string, metadata: any) {
   try {
     // Update consultation status to confirmed
     // Send booking confirmation email
-    console.log(`Processing consultation payment: ${reference}`);
+    console.log(`Processing consultation payment: ${reference} with metadata:`, metadata);
   } catch (error) {
     console.error('Consultation payment handling failed:', error);
     throw error;

@@ -1,4 +1,8 @@
 import { Pool, PoolClient } from 'pg';
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config({ path: '../../.env' });
 
 // Database configuration
 const pool = new Pool({
@@ -11,7 +15,7 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
 });
-
+ 
 // Test database connection
 pool.on('connect', () => {
   console.log('✅ Connected to PostgreSQL database');

@@ -1,15 +1,19 @@
 {
+  "schema": "http://json.schemastore.org/tsconfig",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "module": "commonjs",
     "target": "ES2022",
     "lib": ["ES2022"],
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@misarh/shared": ["../../packages/shared/src"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../../packages/shared/src"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
