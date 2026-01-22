@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { query, transaction } from '../config/database';
-import { analyzeScentProfile } from '../services/openai.service';
+import { analyzeScentProfile } from '../services/ai.service';
+import { createPaymentLink } from '../services/paystack.service';
 import {
   Consultation,
   BookConsultationRequest,
   ConsultationStatus,
+  ConsultationResponse,
 } from '@misarh/shared';
 
 /**
@@ -123,7 +125,6 @@ export const analyzeScent = async (req: Request, res: Response): Promise<void> =
       intensity: intensity || 5
     };
 
-    console.log('🤖 Analyzing scent profile with OpenAI...');
     const aiProfile = await analyzeScentProfile(questionnaireData);
 
     res.status(200).json({
@@ -471,9 +472,34 @@ export const bookConsultation = async (req: Request, res: Response): Promise<voi
       return { consultation, ai_profile: aiProfile };
     });
 
+    // Initialize payment with Paystack
+    let paymentData = null;
+    try {
+      paymentData = await createPaymentLink({
+        orderId: result.consultation.consultation_number,
+        customerEmail: req.user!.email,
+        amount: result.consultation.booking_fee,
+        type: 'consultation',
+        metadata: {
+          customer_id: req.user!.id,
+          consultation_id: result.consultation.id,
+        },
+      });
+    } catch (paymentError) {
+      console.error('Payment initialization failed:', paymentError);
+      // Continue with consultation booking even if payment fails
+    }
+
+    const response: ConsultationResponse = {
+      consultation: result.consultation,
+      ai_profile: result.ai_profile,
+      payment_url: paymentData?.paymentUrl,
+      payment_reference: paymentData?.reference,
+    };
+
     res.status(201).json({
       success: true,
-      data: result,
+      data: response,
     });
   } catch (error: any) {
     console.error('Book consultation error:', error);

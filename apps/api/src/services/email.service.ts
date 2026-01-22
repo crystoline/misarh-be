@@ -1,9 +1,13 @@
-import sgMail from '@sendgrid/mail';
+import nodemailer from 'nodemailer';
 
-// Initialize SendGrid
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-}
+// Create transporter for Gmail SMTP
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD
+  }
+});
 
 interface EmailData {
   to: string;
@@ -15,24 +19,24 @@ interface EmailData {
 const FROM_EMAIL = process.env.FROM_EMAIL || 'hello@misarh.com';
 
 /**
- * Send email using SendGrid
+ * Send email using Nodemailer with Gmail SMTP
  */
 export async function sendEmail(emailData: EmailData): Promise<void> {
   try {
     const htmlContent = renderTemplate(emailData.template, emailData.data);
 
-    const msg = {
-      to: emailData.to,
+    const mailOptions = {
       from: FROM_EMAIL,
+      to: emailData.to,
       subject: emailData.subject,
       html: htmlContent
     };
 
-    if (process.env.SENDGRID_API_KEY) {
-      await sgMail.send(msg);
-      console.log(`Email sent to ${emailData.to}`);
+    if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`Email sent to ${emailData.to}. Message ID: ${info.messageId}`);
     } else {
-      console.log('SendGrid not configured. Email would be sent:', msg);
+      console.log('Gmail SMTP not configured. Email would be sent:', mailOptions);
     }
   } catch (error) {
     console.error('Email sending failed:', error);

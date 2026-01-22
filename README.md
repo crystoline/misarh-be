@@ -141,15 +141,27 @@ npm run build
 npm test
 ```
 
-### Database Management
+### AI Provider Configuration
+
+The app supports both OpenAI and Google Gemini AI for scent profile analysis. To switch between providers:
+
+1. Set the `AI_PROVIDER` environment variable to either `openai` or `gemini`
+2. Ensure the corresponding API key is configured
+3. Restart the API server
+
+**Example configurations:**
 
 ```bash
-# Run migrations
-npm run db:migrate
+# For OpenAI
+AI_PROVIDER=openai
+OPENAI_API_KEY=sk-your-openai-key
 
-# Seed database
-npm run db:seed
+# For Google Gemini
+AI_PROVIDER=gemini
+GEMINI_API_KEY=your-gemini-api-key
 ```
+
+Both providers offer similar functionality with automatic fallback to mock data if the AI service is unavailable.
 
 ## 🐳 Docker Commands
 
@@ -211,8 +223,10 @@ DATABASE_PASSWORD=your_password
 # JWT
 JWT_SECRET=your_jwt_secret
 
-# OpenAI
+# AI Configuration (choose one provider)
+AI_PROVIDER=gemini  # Options: openai, gemini
 OPENAI_API_KEY=your_openai_key
+GEMINI_API_KEY=your_gemini_key
 
 # Payments
 PAYSTACK_SECRET_KEY=your_paystack_key
