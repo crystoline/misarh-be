@@ -102,6 +102,7 @@ export interface Order {
   shipping_address?: ShippingAddress;
   tracking_number?: string;
   notes?: string;
+  internal_notes?: string;
   assigned_to?: string; // ID of admin/staff
   priority?: 'normal' | 'high' | 'urgent';
   created_at: Date;

@@ -93,18 +93,18 @@
 - [x] Set up routing and lazy loading
 - [x] Create SCSS design system
 - [x] Build API service layer
-- [/] Create homepage component
-- [ ] Build navigation header
-- [ ] Create product listing page
-- [ ] Build product detail page
-- [ ] Create shopping cart UIion guards and services
-- [ ] Create HTTP interceptors for JWT
-- [ ] Set up state management
+- [x] Create homepage component
+- [x] Build navigation header
+- [x] Create product listing page
+- [x] Build product detail page
+- [x] Create shopping cart UIion guards and services
+- [x] Create HTTP interceptors for JWT
+- [x] Set up state management
 
 ## Phase 8: Public Website Pages
 
 - [x] Build landing page with animations
-- [ ] Create individual fragrance pages (4 pages)
+- [x] Create individual fragrance pages (4 pages)
 - [x] Implement shop page with filtering
 - [x] Build cart and checkout flow
 - [x] Fixed cart price calculations with size multipliers
@@ -126,36 +126,36 @@
 
 ## Phase 10: Customer Dashboard Frontend
 
-- [ ] Build account management interface
-- [ ] Create order history display
-  - [ ] Order list with status badges
-  - [ ] Order detail view
-  - [ ] Order tracking timeline
-  - [ ] Status filters (all, pending, shipped, delivered)
-  - [ ] Download invoice/receipt
-- [ ] Implement consultation history view
-- [ ] Build scent recommendation chart (radar visualization)
-- [ ] Create subscription management UI
-- [ ] Implement profile settings
+- [x] Build account management interface
+- [x] Create order history display
+  - [x] Order list with status badges
+  - [x] Order detail view
+  - [x] Order tracking timeline
+  - [x] Status filters (all, pending, shipped, delivered)
+  - [x] Download invoice/receipt
+- [x] Implement consultation history view
+- [x] Build scent recommendation chart (radar visualization)
+- [x] Create subscription management UI
+- [x] Implement profile settings
 
 ## Phase 11: Admin Dashboard Frontend
 
-- [ ] Build admin login and authentication
-- [ ] Create order management interface
-  - [ ] Order list with advanced filters
-  - [ ] Status update dropdown/workflow
-  - [ ] Add tracking information form
-  - [ ] Bulk actions (status update, export)
-  - [ ] Order analytics dashboard
-  - [ ] Priority/urgent order flags
-  - [ ] Staff assignment
-  - [ ] Internal notes system
-- [ ] Create consultation management interface
-- [ ] Implement availability calendar UI
-- [ ] Build formula recording interface
-- [ ] Create customer database view
-- [ ] Implement analytics dashboard
-- [ ] Build order management interface
+- [x] Build admin login and authentication
+- [x] Create order management interface
+  - [x] Order list with advanced filters
+  - [x] Status update dropdown/workflow
+  - [x] Add tracking information form
+  - [x] Bulk actions (status update, export)
+  - [x] Order analytics dashboard
+  - [x] Priority/urgent order flags
+  - [x] Staff assignment
+  - [x] Internal notes system
+- [x] Create consultation management interface
+- [x] Implement availability calendar UI
+- [x] Build formula recording interface
+- [x] Create customer database view
+- [x] Implement analytics dashboard
+- [x] Build order management interface
 
 ## Phase 12: Integration & Testing
 
