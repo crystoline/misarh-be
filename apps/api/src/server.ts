@@ -15,6 +15,10 @@ import wishlistRoutes from './routes/wishlist.routes';
 import consultationsRoutes from './routes/consultations.routes';
 import newsletterRoutes from './routes/newsletter.routes';
 import contactRoutes from './routes/newsletter.routes'; // Contact uses same file
+import usersRoutes from './routes/users.routes';
+import uploadRoutes from './routes/upload.routes';
+import subscriptionsRoutes from './routes/subscriptions.routes';
+import adminRoutes from './routes/admin.routes';
 
 // Load environment variables from monorepo root
 dotenv.config({ path: '../../.env' });
@@ -73,7 +77,11 @@ app.use('/orders', ordersRoutes);
 app.use('/wishlist', wishlistRoutes);
 app.use('/consultations', consultationsRoutes);
 app.use('/newsletter', newsletterRoutes);
- app.use('/contact', contactRoutes);
+app.use('/contact', contactRoutes);
+app.use('/users', usersRoutes);
+app.use('/upload', uploadRoutes);
+app.use('/subscriptions', subscriptionsRoutes);
+app.use('/admin', adminRoutes);
 
 // 404 handler
 app.use(notFoundHandler);

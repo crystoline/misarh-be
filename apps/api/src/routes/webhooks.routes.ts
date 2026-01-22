@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import crypto from 'crypto';
-// import { createOrder } from '../controllers/orders.controller';
+import { query } from '../config/database';
+import { sendEmail } from '../services/email.service';
 
 const router = Router();
 
@@ -49,11 +50,49 @@ router.post('/paystack', async (req, res) => {
 
 async function handleOrderPayment(reference: string, customerEmail: string) {
   try {
-    // Get cart items for this customer
-    // Create order
-    // Clear cart
-    // Send email confirmation
-    console.log(`Processing order payment: ${reference} for ${customerEmail}`);
+    // Update order payment status
+    const orderResult = await query(
+      `UPDATE orders
+       SET payment_status = 'successful', status = 'processing', updated_at = CURRENT_TIMESTAMP
+       WHERE order_number = $1
+       RETURNING *`,
+      [reference]
+    );
+
+    if (orderResult.rowCount === 0) {
+      throw new Error(`Order ${reference} not found`);
+    }
+
+    const order = orderResult.rows[0];
+
+    // Get order items for email
+    const itemsResult = await query(
+      'SELECT * FROM order_items WHERE order_id = $1',
+      [order.id]
+    );
+
+    // Send order confirmation email
+    await sendEmail({
+      to: customerEmail,
+      subject: `Order Confirmation - ${reference}`,
+      template: 'order-confirmation',
+      data: {
+        customerName: order.shipping_address?.full_name || 'Valued Customer',
+        orderId: reference,
+        items: itemsResult.rows.map((item: any) => ({
+          product_name: item.product_name,
+          size: item.size,
+          quantity: item.quantity,
+          total: item.total_price,
+        })),
+        subtotal: order.subtotal,
+        shippingFee: 0, // Add shipping calculation if needed
+        total: order.total,
+        shippingAddress: order.shipping_address,
+      },
+    });
+
+    console.log(`✅ Order ${reference} payment processed successfully`);
   } catch (error) {
     console.error('Order payment handling failed:', error);
     throw error;
@@ -63,8 +102,39 @@ async function handleOrderPayment(reference: string, customerEmail: string) {
 async function handleConsultationPayment(reference: string, metadata: any) {
   try {
     // Update consultation status to confirmed
-    // Send booking confirmation email
-    console.log(`Processing consultation payment: ${reference} with metadata:`, metadata);
+    const consultationResult = await query(
+      `UPDATE consultations
+       SET status = 'confirmed', updated_at = CURRENT_TIMESTAMP
+       WHERE consultation_number = $1
+       RETURNING *`,
+      [reference]
+    );
+
+    if (consultationResult.rowCount === 0) {
+      throw new Error(`Consultation ${reference} not found`);
+    }
+
+    const consultation = consultationResult.rows[0];
+
+    // Get customer email from metadata or consultation
+    const customerEmail = metadata?.customer_email || consultation.customer_email;
+
+    // Send consultation confirmation email
+    await sendEmail({
+      to: customerEmail,
+      subject: `Consultation Booking Confirmed - ${reference}`,
+      template: 'consultation-booking',
+      data: {
+        customerName: 'Valued Customer', // You might want to get this from customer table
+        consultationId: reference,
+        date: consultation.date,
+        timeSlot: consultation.time_slot,
+        bookingFee: consultation.booking_fee,
+        aiProfile: consultation.ai_profile, // This might be JSON, format accordingly
+      },
+    });
+
+    console.log(`✅ Consultation ${reference} payment processed successfully`);
   } catch (error) {
     console.error('Consultation payment handling failed:', error);
     throw error;

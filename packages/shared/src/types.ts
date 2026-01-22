@@ -339,6 +339,8 @@ export interface CreateOrderRequest {
 export interface OrderResponse {
   order: Order;
   items: OrderItem[];
+  payment_url?: string;
+  payment_reference?: string;
 }
 
 // Consultations
@@ -351,6 +353,8 @@ export interface BookConsultationRequest {
 export interface ConsultationResponse {
   consultation: Consultation;
   ai_profile: ScentProfile;
+  payment_url?: string;
+  payment_reference?: string;
 }
 
 // Payments

@@ -13,8 +13,8 @@
 - [x] Create API server boilerplate
 - [x] Set up PostgreSQL database schema
 - [x] Implement JWT authentication system
-- [ ] Create user/customer management endpoints
-- [ ] Set up file upload to Cloudinary/S3
+- [x] Create user/customer management endpoints
+- [x] Set up file upload to Cloudinary/S3
 - [x] Configure Paystack payment integration
 - [x] Set up SendGrid email service
   - [x] Order confirmation emails
@@ -50,22 +50,22 @@
 
 ## Phase 5: Customer Dashboard Backend
 
-- [ ] Create customer profile management endpoints
-- [ ] Build order history API
-  - [ ] GET /orders - List all customer orders
-  - [ ] GET /orders/:id - Get order details
-  - [ ] GET /orders/:id/tracking - Get order tracking info
-- [ ] Order status tracking
-  - [ ] Pending (payment received)
-  - [ ] Processing (being prepared)
-  - [ ] Shipped (in transit)
-  - [ ] Delivered (completed)
-  - [ ] Cancelled
-  - [ ] Refunded
-- [ ] Implement consultation history system
-- [ ] Create scent recommendation engine (AI-powered)
-- [ ] Build subscription management system
-- [ ] Implement reorder functionality
+- [x] Create customer profile management endpoints
+- [x] Build order history API
+  - [x] GET /orders - List all customer orders
+  - [x] GET /orders/:id - Get order details
+  - [x] GET /orders/:id/tracking - Get order tracking info
+- [x] Order status tracking
+  - [x] Pending (payment received)
+  - [x] Processing (being prepared)
+  - [x] Shipped (in transit)
+  - [x] Delivered (completed)
+  - [x] Cancelled
+  - [x] Refunded
+- [x] Implement consultation history system
+- [x] Create scent recommendation engine (AI-powered)
+- [x] Build subscription management system
+- [x] Implement reorder functionality
 
 ## Phase 6: Admin Dashboard Backend
 
